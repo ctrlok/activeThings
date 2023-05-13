@@ -3,8 +3,10 @@ use framework "Foundation"
 tell application "Things3"
     set todoList to {}
     repeat with inboxToDo in to dos of list "Today"
-        set todoRecord to {recordID:id of inboxToDo, RecordName:name of inboxToDo}
-        copy todoRecord to the end of todoList
+        if status of inboxToDo is not completed then
+            set todoRecord to {recordID:id of inboxToDo, RecordName:name of inboxToDo}
+            copy todoRecord to the end of todoList
+        end if
     end repeat
     if length of todoList > 0 then
         set firstToDo to item 1 of todoList

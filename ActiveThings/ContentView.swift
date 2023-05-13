@@ -1,41 +1,53 @@
 import SwiftUI
 import Foundation
 
-
 // Separate the logic for fetching to-dos into a struct
 struct ToDo: Codable {
     let recordID: String
     let RecordName: String
 }
 
-struct ThingsManager {
+class ThingsManager: ObservableObject {
     static let shared = ThingsManager()
     
-    private init() {}
+    @Published var firstToDo: (name: String, id: String) = ("", "")
+
+    private init() {
+        startFetchingToDos()
+    }
     
-    func fetchToDos(completion: @escaping (String) -> Void) {
+    private func startFetchingToDos() {
+        fetchToDos { [weak self] result in
+            self?.firstToDo = result
+        }
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.fetchToDos { result in
+                self?.firstToDo = result
+            }
+        }
+    }
+    
+    func fetchToDos(completion: @escaping ((String, String)) -> Void) {
         DispatchQueue.global().async {
             let executeAppleScript = ExecuteAppleScript()
             executeAppleScript.execute { (status, result) in
-                print("Status: \(status)") // Print the status
-                print("Result: \(result)") // Print the result
-                
                 DispatchQueue.main.async {
                     if status == "Execution of AppleScript successful!" {
                         if let jsonData = result.data(using: .utf8) {
                             let decoder = JSONDecoder()
                             do {
                                 let todo = try decoder.decode(ToDo.self, from: jsonData)
-                                completion("\(todo.recordID): \(todo.RecordName)")
+                                // Pass both name and ID to the completion handler
+                                completion((todo.RecordName, todo.recordID))
                             } catch {
                                 print("Error: \(error.localizedDescription)") // Print the error details
-                                completion("Error: Unable to decode JSON")
+                                completion(("Error: Unable to decode JSON", ""))
                             }
                         } else {
-                            completion(result)
+                            completion((result, ""))
                         }
                     } else {
-                        completion("Error: \(status)")
+                        completion(("Error: \(status)", ""))
                     }
                     
                 }
@@ -45,7 +57,7 @@ struct ThingsManager {
 }
 
 struct ContentView: View {
-    @State private var firstToDo: String = ""
+    @ObservedObject var thingsManager: ThingsManager
 
     var body: some View {
         GeometryReader { geometry in
@@ -59,41 +71,25 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                     .zIndex(-1) // Set the zIndex of the gradient to -1
                 
-                Text(firstToDo)
-                    .font(.system(size: 18, weight: .regular))
-                    .foregroundColor(.white)
-                    .padding(EdgeInsets(top: 25, leading: 40, bottom: 0, trailing: 0))
-                    .overlay(
-                        LinearGradient(gradient: Gradient(stops: [
-                            Gradient.Stop(color: Color(red: 0.98, green: 0.98, blue: 0.98), location: 0),
-                            Gradient.Stop(color: Color.white, location: 80 / geometry.size.width),
-                            Gradient.Stop(color: Color.white, location: 300 / geometry.size.width),
-                            Gradient.Stop(color: Color(red: 0.92, green: 0.92, blue: 0.92).opacity(1), location: 1)
-                        ]), startPoint: .leading, endPoint: .trailing)
-                    )
-                    .mask(Text(firstToDo).font(.system(size: 18, weight: .regular))
-                    )
+                OptionClickableText(taskID: thingsManager.firstToDo.id, taskName: thingsManager.firstToDo.name)
+                    .padding(EdgeInsets(top: 15, leading: 20, bottom: 0, trailing: 0))
+//                    .overlay(
+//                        LinearGradient(gradient: Gradient(stops: [
+//                            Gradient.Stop(color: Color(red: 0.98, green: 0.98, blue: 0.98), location: 0),
+//                            Gradient.Stop(color: Color.white, location: 80 / geometry.size.width),
+//                            Gradient.Stop(color: Color.white, location: 300 / geometry.size.width),
+//                            Gradient.Stop(color: Color(red: 0.92, green: 0.92, blue: 0.92).opacity(1), location: 1)
+//                        ]), startPoint: .leading, endPoint: .trailing)
+//                    )
+//                    .mask(Text(thingsManager.firstToDo.name).font(.system(size: 18, weight: .regular))
+//                    )
             
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onAppear(perform: startFetchingToDos)
         }
     }
-    
-    func startFetchingToDos() {
-        fetchToDos()
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            fetchToDos()
-        }
-    }
-    
-    func fetchToDos() {
-        ThingsManager.shared.fetchToDos { result in
-            firstToDo = result
-        }
-    }
-}
 
+}
 class ExecuteAppleScript {
     var status = ""
     private let scriptfileUrl: URL?
@@ -132,46 +128,5 @@ class ExecuteAppleScript {
     }
 }
 
-@main
-struct MyApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    var body: some Scene {
-        Settings {
-            EmptyView()
-        }
-        .handlesExternalEvents(matching: Set(arrayLiteral: "*"))
-    }
-}
 
-class AppDelegate: NSObject, NSApplicationDelegate {
-    var windows: [NSWindow] = []
-
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView()
-
-        for screen in NSScreen.screens {
-            // Create the window and set the content view.
-            let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 300, height: 300),
-                styleMask: [.borderless], // borderless window
-                backing: .buffered, defer: false)
-            window.center()
-            window.setFrameAutosaveName("Main Window")
-            window.contentView = NSHostingView(rootView: contentView)
-            window.level = NSWindow.Level(rawValue: -1000) // Change this line to place the widget in the background
-            window.collectionBehavior = [.canJoinAllSpaces, .managed, .fullScreenAuxiliary]
-            window.isOpaque = false
-            window.backgroundColor = NSColor.clear
-
-            let screenSize = screen.visibleFrame.size // Use visibleFrame to exclude the menu bar
-            let windowSize = NSSize(width: 500, height: 500) // Adjust this to your liking
-            let windowOrigin = NSPoint(x: screen.visibleFrame.origin.x, y: screenSize.height + screen.visibleFrame.origin.y - windowSize.height + 2) // Top-left corner, right under the menu bar
-            window.setFrame(NSRect(origin: windowOrigin, size: windowSize), display: true)
-
-            window.makeKeyAndOrderFront(nil)
-            windows.append(window)
-        }
-    }
-}
