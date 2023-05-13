@@ -1,6 +1,7 @@
 import SwiftUI
 import Foundation
 
+
 // Separate the logic for fetching to-dos into a struct
 struct ThingsManager {
     static let shared = ThingsManager()
@@ -24,7 +25,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            RadialGradient(gradient: Gradient(colors: [Color.black.opacity(0.3), Color.black.opacity(0.0)]), center: .topLeading, startRadius: 0, endRadius: 150)
+            RadialGradient(gradient: Gradient(colors: [Color.black.opacity(0.5), Color.black.opacity(0.0)]), center: .topLeading, startRadius: 0, endRadius: 250)
                 .edgesIgnoringSafeArea(.all)
             
             
@@ -116,14 +117,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window?.center()
         window?.setFrameAutosaveName("Main Window")
         window?.contentView = NSHostingView(rootView: contentView)
-        window?.level = .floating
+        window?.level = NSWindow.Level(rawValue: -1000) // Change this line to place the widget in the background
         window?.collectionBehavior = [.canJoinAllSpaces, .managed, .fullScreenAuxiliary]
         window?.isOpaque = false
         window?.backgroundColor = NSColor.clear
 
-        let screenSize = window?.screen?.frame.size ?? NSSize(width: 800, height: 600)
-        let windowSize = NSSize(width: 200, height: 100) // Adjust this to your liking
-        let windowOrigin = NSPoint(x: 0, y: screenSize.height - windowSize.height) // Top-left corner
+        let screenSize = window?.screen?.visibleFrame.size ?? NSSize(width: 800, height: 600) // Use visibleFrame to exclude the menu bar
+        let windowSize = NSSize(width: 500, height: 500) // Adjust this to your liking
+        let windowOrigin = NSPoint(x: 0, y: screenSize.height - windowSize.height + 2 ) // Top-left corner, right under the menu bar
         window?.setFrame(NSRect(origin: windowOrigin, size: windowSize), display: true)
 
         window?.makeKeyAndOrderFront(nil)
