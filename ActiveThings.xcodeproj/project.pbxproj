@@ -14,6 +14,7 @@
 		5B768FE82A0F656500A480F2 /* ActiveThingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B768FE72A0F656500A480F2 /* ActiveThingsTests.swift */; };
 		5B768FF22A0F656500A480F2 /* ActiveThingsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B768FF12A0F656500A480F2 /* ActiveThingsUITests.swift */; };
 		5B768FF42A0F656500A480F2 /* ActiveThingsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B768FF32A0F656500A480F2 /* ActiveThingsUITestsLaunchTests.swift */; };
+		5B7690032A0F8E7100A480F2 /* fetchToDos.scpt in Copy Files */ = {isa = PBXBuildFile; fileRef = 5B7690012A0F8D7200A480F2 /* fetchToDos.scpt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +34,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		5B7690022A0F8E5300A480F2 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "Users/$USER/Library/Application Scripts/$PRODUCT_BUNDLE_IDENTIFIER";
+			dstSubfolderSpec = 0;
+			files = (
+				5B7690032A0F8E7100A480F2 /* fetchToDos.scpt in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		5B768FD22A0F656400A480F2 /* ActiveThings.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActiveThings.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B768FD52A0F656400A480F2 /* ActiveThingsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveThingsApp.swift; sourceTree = "<group>"; };
@@ -45,6 +60,8 @@
 		5B768FED2A0F656500A480F2 /* ActiveThingsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActiveThingsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B768FF12A0F656500A480F2 /* ActiveThingsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveThingsUITests.swift; sourceTree = "<group>"; };
 		5B768FF32A0F656500A480F2 /* ActiveThingsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveThingsUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		5B7690002A0F890A00A480F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		5B7690012A0F8D7200A480F2 /* fetchToDos.scpt */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = fetchToDos.scpt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,11 +112,13 @@
 		5B768FD42A0F656400A480F2 /* ActiveThings */ = {
 			isa = PBXGroup;
 			children = (
+				5B7690002A0F890A00A480F2 /* Info.plist */,
 				5B768FD52A0F656400A480F2 /* ActiveThingsApp.swift */,
 				5B768FD72A0F656400A480F2 /* ContentView.swift */,
 				5B768FD92A0F656500A480F2 /* Assets.xcassets */,
 				5B768FDE2A0F656500A480F2 /* ActiveThings.entitlements */,
 				5B768FDB2A0F656500A480F2 /* Preview Content */,
+				5B7690012A0F8D7200A480F2 /* fetchToDos.scpt */,
 			);
 			path = ActiveThings;
 			sourceTree = "<group>";
@@ -139,6 +158,7 @@
 				5B768FCE2A0F656400A480F2 /* Sources */,
 				5B768FCF2A0F656400A480F2 /* Frameworks */,
 				5B768FD02A0F656400A480F2 /* Resources */,
+				5B7690022A0F8E5300A480F2 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -424,6 +444,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ActiveThings/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -451,6 +472,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ActiveThings/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
