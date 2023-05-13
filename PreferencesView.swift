@@ -1,13 +1,25 @@
 import SwiftUI
 
-override func windowDidLoad() {
-    super.windowDidLoad()
-    
-    // Load MainMenu.xib
-    if let mainMenu = NSNib(nibNamed: "MainMenu", bundle: nil) {
-        mainMenu.instantiate(withOwner: self, topLevelObjects: nil)
-        NSApp.mainMenu = self.menu
-    } else {
-        print("Failed to load MainMenu.xib")
+struct PreferencesView: View {
+    @State private var thingsToken: String = UserDefaults.standard.string(forKey: "thingsToken") ?? ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Preferences")
+                .font(.largeTitle)
+
+            HStack {
+                Text("Things Token:")
+                TextField("Enter token", text: $thingsToken)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+
+            Spacer()
+        }
+        .padding()
+        .frame(width: 400, height: 200)
+        .onChange(of: thingsToken) { newValue in
+            UserDefaults.standard.set(newValue, forKey: "thingsToken")
+        }
     }
 }

@@ -16,7 +16,11 @@
 		5B768FF42A0F656500A480F2 /* ActiveThingsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B768FF32A0F656500A480F2 /* ActiveThingsUITestsLaunchTests.swift */; };
 		5B7690032A0F8E7100A480F2 /* fetchToDos.scpt in Copy Files */ = {isa = PBXBuildFile; fileRef = 5B7690012A0F8D7200A480F2 /* fetchToDos.scpt */; };
 		5B7690052A1006BD00A480F2 /* TapGestureHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7690042A1006BD00A480F2 /* TapGestureHandler.swift */; };
-		5B76900D2A1034A900A480F2 /* GeneralSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B76900C2A1034A900A480F2 /* GeneralSettingsView.swift */; };
+		5B76900D2A1034A900A480F2 /* AppModelAndMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B76900C2A1034A900A480F2 /* AppModelAndMenu.swift */; };
+		5B76900F2A10432900A480F2 /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B76900E2A10432900A480F2 /* PreferencesView.swift */; };
+		5B7690112A1043B100A480F2 /* ToDo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7690102A1043B100A480F2 /* ToDo.swift */; };
+		5B7690132A1043D200A480F2 /* ThingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7690122A1043D200A480F2 /* ThingsManager.swift */; };
+		5B7690152A10440200A480F2 /* ExecuteAppleScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B7690142A10440200A480F2 /* ExecuteAppleScript.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +69,11 @@
 		5B7690002A0F890A00A480F2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		5B7690012A0F8D7200A480F2 /* fetchToDos.scpt */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = fetchToDos.scpt; sourceTree = "<group>"; };
 		5B7690042A1006BD00A480F2 /* TapGestureHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapGestureHandler.swift; sourceTree = "<group>"; };
-		5B76900C2A1034A900A480F2 /* GeneralSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettingsView.swift; sourceTree = "<group>"; };
+		5B76900C2A1034A900A480F2 /* AppModelAndMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModelAndMenu.swift; sourceTree = "<group>"; };
+		5B76900E2A10432900A480F2 /* PreferencesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = SOURCE_ROOT; };
+		5B7690102A1043B100A480F2 /* ToDo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDo.swift; sourceTree = "<group>"; };
+		5B7690122A1043D200A480F2 /* ThingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingsManager.swift; sourceTree = "<group>"; };
+		5B7690142A10440200A480F2 /* ExecuteAppleScript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExecuteAppleScript.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,8 +104,6 @@
 		5B768FC92A0F656400A480F2 = {
 			isa = PBXGroup;
 			children = (
-				5B76900C2A1034A900A480F2 /* GeneralSettingsView.swift */,
-				5B7690042A1006BD00A480F2 /* TapGestureHandler.swift */,
 				5B768FD42A0F656400A480F2 /* ActiveThings */,
 				5B768FE62A0F656500A480F2 /* ActiveThingsTests */,
 				5B768FF02A0F656500A480F2 /* ActiveThingsUITests */,
@@ -118,7 +124,13 @@
 		5B768FD42A0F656400A480F2 /* ActiveThings */ = {
 			isa = PBXGroup;
 			children = (
+				5B7690142A10440200A480F2 /* ExecuteAppleScript.swift */,
+				5B7690122A1043D200A480F2 /* ThingsManager.swift */,
+				5B7690102A1043B100A480F2 /* ToDo.swift */,
+				5B76900C2A1034A900A480F2 /* AppModelAndMenu.swift */,
+				5B7690042A1006BD00A480F2 /* TapGestureHandler.swift */,
 				5B7690002A0F890A00A480F2 /* Info.plist */,
+				5B76900E2A10432900A480F2 /* PreferencesView.swift */,
 				5B768FD52A0F656400A480F2 /* ActiveThingsApp.swift */,
 				5B768FD72A0F656400A480F2 /* ContentView.swift */,
 				5B768FD92A0F656500A480F2 /* Assets.xcassets */,
@@ -285,9 +297,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B76900F2A10432900A480F2 /* PreferencesView.swift in Sources */,
 				5B7690052A1006BD00A480F2 /* TapGestureHandler.swift in Sources */,
 				5B768FD82A0F656400A480F2 /* ContentView.swift in Sources */,
-				5B76900D2A1034A900A480F2 /* GeneralSettingsView.swift in Sources */,
+				5B7690132A1043D200A480F2 /* ThingsManager.swift in Sources */,
+				5B7690112A1043B100A480F2 /* ToDo.swift in Sources */,
+				5B7690152A10440200A480F2 /* ExecuteAppleScript.swift in Sources */,
+				5B76900D2A1034A900A480F2 /* AppModelAndMenu.swift in Sources */,
 				5B768FD62A0F656400A480F2 /* ActiveThingsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
