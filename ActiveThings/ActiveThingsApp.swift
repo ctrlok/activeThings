@@ -39,15 +39,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 struct MyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    init() {
-        let mainMenu = MainMenu(title: "Main Menu")
-        NSApplication.shared.mainMenu = mainMenu
-    }
-
     var body: some Scene {
         Settings {
-            EmptyView()
+            PreferencesView()
         }
         .handlesExternalEvents(matching: Set(arrayLiteral: "*"))
     }
+    
 }

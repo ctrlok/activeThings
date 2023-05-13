@@ -73,17 +73,6 @@ struct ContentView: View {
                 
                 OptionClickableText(taskID: thingsManager.firstToDo.id, taskName: thingsManager.firstToDo.name)
                     .padding(EdgeInsets(top: 15, leading: 20, bottom: 0, trailing: 0))
-//                    .overlay(
-//                        LinearGradient(gradient: Gradient(stops: [
-//                            Gradient.Stop(color: Color(red: 0.98, green: 0.98, blue: 0.98), location: 0),
-//                            Gradient.Stop(color: Color.white, location: 80 / geometry.size.width),
-//                            Gradient.Stop(color: Color.white, location: 300 / geometry.size.width),
-//                            Gradient.Stop(color: Color(red: 0.92, green: 0.92, blue: 0.92).opacity(1), location: 1)
-//                        ]), startPoint: .leading, endPoint: .trailing)
-//                    )
-//                    .mask(Text(thingsManager.firstToDo.name).font(.system(size: 18, weight: .regular))
-//                    )
-            
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }

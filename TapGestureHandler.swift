@@ -32,13 +32,13 @@ struct OptionClickableText: View {
               GradientText(
                   text: taskName,
                   gradient: LinearGradient(gradient: Gradient(stops: [
-                      Gradient.Stop(color: Color(red: 0.98, green: 0.98, blue: 0.98), location: 0),
+                      Gradient.Stop(color: Color(red: 0.8, green: 0.8, blue: 0.8), location: 0),
                       Gradient.Stop(color: Color.white, location: 0.3),
                       Gradient.Stop(color: Color.white, location: 0.7),
                       Gradient.Stop(color: Color(red: 0.92, green: 0.92, blue: 0.92).opacity(1), location: 1)
                   ]), startPoint: .leading, endPoint: .trailing)
               )
-                  .font(.system(size: 18, weight: .regular))
+                  .font(.system(size: 15, weight: .regular))
           }
           .buttonStyle(TransparentButtonStyle())
     }
@@ -47,9 +47,14 @@ struct OptionClickableText: View {
         let optionKeyPressed = NSApp.currentEvent?.modifierFlags.contains(.option) ?? false
         print("Handling click. Option key pressed: \(optionKeyPressed)")
 
+        guard let thingsToken = UserDefaults.standard.string(forKey: "thingsToken") else {
+            print("No token found")
+            return
+        }
+
         var urlString = "things:///show?id=\(taskID)"
         if optionKeyPressed {
-            urlString = "things:///update?id=\(taskID)&status=completed"
+            urlString = "things:///update?id=\(taskID)&completed=true&auth-token=\(thingsToken)"
         }
 
         print("URL string: \(urlString)")
