@@ -6,7 +6,7 @@ class ThingsManager: ObservableObject {
     
     @Published var firstToDo: (name: String, id: String) = ("", "")
 
-    private init() {
+    public init() {
         startFetchingToDos()
     }
     
@@ -21,9 +21,39 @@ class ThingsManager: ObservableObject {
         }
     }
     
+    func fetchAreas(completion: @escaping ([Areas]) -> Void) {
+        DispatchQueue.global().async {
+            let executeAppleScript = ExecuteAppleScript(scriptName: "fetchAreas.scpt")
+            print("starting getting areas")
+            executeAppleScript.execute { (status, result) in
+                print("Resilt: \(result)")
+                DispatchQueue.main.async {
+                    if status == "Execution of AppleScript successful!" {
+
+                        if let jsonData = result.data(using: .utf8) {
+                        print("JSON Data: \(String(data: jsonData, encoding: .utf8) ?? "")")
+                            let decoder = JSONDecoder()
+                            do {
+                                let areas = try decoder.decode([Areas].self, from: jsonData)
+                                completion(areas)
+                            } catch {
+                                print("Error: \(error.localizedDescription)") // Print the error details
+                                completion([])
+                            }
+                        } else {
+                            completion([])
+                        }
+                    } else {
+                        completion([])
+                    }
+                }
+            }
+        }
+    }
+    
     func fetchToDos(completion: @escaping ((String, String)) -> Void) {
         DispatchQueue.global().async {
-            let executeAppleScript = ExecuteAppleScript()
+            let executeAppleScript = ExecuteAppleScript(scriptName: "fetchToDos.scpt")
             executeAppleScript.execute { (status, result) in
                 DispatchQueue.main.async {
                     if status == "Execution of AppleScript successful!" {
@@ -43,7 +73,6 @@ class ThingsManager: ObservableObject {
                     } else {
                         completion(("Error: \(status)", ""))
                     }
-                    
                 }
             }
         }

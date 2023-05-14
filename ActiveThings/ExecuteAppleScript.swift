@@ -3,17 +3,20 @@ import Foundation
 
 
 class ExecuteAppleScript {
+    let scriptName: String
+    
     var status = ""
     private let scriptfileUrl: URL?
 
-    init() {
+    init(scriptName: String) {
+        self.scriptName = scriptName
         do {
             let destinationURL = try FileManager().url(
                 for: FileManager.SearchPathDirectory.applicationScriptsDirectory,
                 in: FileManager.SearchPathDomainMask.userDomainMask,
                 appropriateFor: nil,
                 create: true)
-            self.scriptfileUrl = destinationURL.appendingPathComponent("fetchToDos.scpt")
+            self.scriptfileUrl = destinationURL.appendingPathComponent(self.scriptName)
             self.status = "Linking of scriptfile successful!"
         } catch {
             self.status = error.localizedDescription

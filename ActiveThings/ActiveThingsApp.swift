@@ -38,10 +38,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct MyApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject var thingsManager = ThingsManager.shared
     
     var body: some Scene {
         Settings {
-            PreferencesView()
+            PreferencesView(thingsManager: thingsManager)
+
         }
         .handlesExternalEvents(matching: Set(arrayLiteral: "*"))
     }
