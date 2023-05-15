@@ -88,17 +88,41 @@ class ThingsManager: ObservableObject {
         }
     }
     
-    private let specialArea = Area(id: "1", areaName: "No Areas")
     
-    /// Fetches areas data.
+    // Fetches to-dos data.
+    func fetchToDos(completion: @escaping (Result<(String, String), Error>) -> Void) {
+        loadData()
+        loadActiveArea()
+        DispatchQueue.global().async {
+            let executeAppleScript = ExecuteAppleScript(scriptName: "fetchToDos.scpt")
+            executeAppleScript.execute { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let scriptResult):
+                        if let jsonData = scriptResult.data(using: .utf8) {
+                            let result = decodeAndFilterToDos(jsonData: jsonData)
+                            completion(result)
+                        } else {
+                            completion(.failure(NSError(domain: "ConversionError", code: -1, userInfo: nil)))
+                        }
+                    case .failure(let error):
+                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])))
+                    }
+                }
+            }
+        }
+    }
+
+    private let specialArea = Area(id: "1", areaName: "No Areas")
+    // Fetches areas data.
     func fetchAreas(completion: @escaping (Result<Set<Area>, Error>) -> Void) {
         DispatchQueue.global().async {
             let executeAppleScript = ExecuteAppleScript(scriptName: "fetchAreas.scpt")
-            executeAppleScript.execute { (status, result) in
+            executeAppleScript.execute { result in
                 DispatchQueue.main.async {
-                    if status == "Execution of AppleScript successful!" {
-
-                        if let jsonData = result.data(using: .utf8) {
+                    switch result {
+                    case .success(let scriptResult):
+                        if let jsonData = scriptResult.data(using: .utf8) {
                             let decoder = JSONDecoder()
                             do {
                                 var areas = try decoder.decode([Area].self, from: jsonData)
@@ -113,36 +137,8 @@ class ThingsManager: ObservableObject {
                         } else {
                             completion(.failure(NSError(domain: "ConversionError", code: -1, userInfo: nil)))
                         }
-                    } else {
-                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: nil)))
-                    }
-                }
-            }
-        }
-    }
-    
-    /// Fetches to-dos data.
-    func fetchToDos(completion: @escaping (Result<(String, String), Error>) -> Void) {
-        loadData()
-        loadActiveArea()
-        DispatchQueue.global().async {
-            let executeAppleScript = ExecuteAppleScript(scriptName: "fetchToDos.scpt")
-            executeAppleScript.execute { (status, result) in
-                DispatchQueue.main.async {
-                    if status == "Execution of AppleScript successful!" {
-                        if let jsonData = result.data(using: .utf8) {
-                            let result = decodeAndFilterToDos(jsonData: jsonData)
-                            switch result {
-                            case .success(let todo):
-                                completion(.success(todo))
-                            case .failure(let error):
-                                completion(.failure(error))
-                            }
-                        } else {
-                            completion(.failure(NSError(domain: "ConversionError", code: -1, userInfo: nil)))
-                        }
-                    } else {
-                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: nil)))
+                    case .failure(let error):
+                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: [NSLocalizedDescriptionKey: error.localizedDescription])))
                     }
                 }
             }

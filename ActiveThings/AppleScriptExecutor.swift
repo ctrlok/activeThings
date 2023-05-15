@@ -1,19 +1,16 @@
-import SwiftUI
 import Foundation
 
-
-class ExecuteAppleScript {
+final class ExecuteAppleScript {
     let scriptName: String
-    
-    var status = ""
+    private(set) var status = ""
     private let scriptfileUrl: URL?
-
+    
     init(scriptName: String) {
         self.scriptName = scriptName
         do {
-            let destinationURL = try FileManager().url(
-                for: FileManager.SearchPathDirectory.applicationScriptsDirectory,
-                in: FileManager.SearchPathDomainMask.userDomainMask,
+            let destinationURL = try FileManager.default.url(
+                for: .applicationScriptsDirectory,
+                in: .userDomainMask,
                 appropriateFor: nil,
                 create: true)
             self.scriptfileUrl = destinationURL.appendingPathComponent(self.scriptName)
@@ -23,22 +20,27 @@ class ExecuteAppleScript {
             self.scriptfileUrl = nil
         }
     }
-
-    func execute(completion: @escaping (String, String) -> Void) {
+    
+    func execute(completion: @escaping (Result<String, Error>) -> Void) {
+        guard let scriptfileUrl = scriptfileUrl else {
+            completion(.failure(NSError(domain: "Script file URL is nil", code: -1, userInfo: nil)))
+            return
+        }
+        
         do {
-            let scriptTask = try NSUserAppleScriptTask(url: self.scriptfileUrl!)
+            let scriptTask = try NSUserAppleScriptTask(url: scriptfileUrl)
             scriptTask.execute(withAppleEvent: nil) { (result, error) in
                 if let error = error {
                     print("Error: \(error.localizedDescription)")
-                    completion("Error: \(error.localizedDescription)", "")
+                    completion(.failure(error))
                 } else if let result = result {
                     let scriptResult = result.stringValue ?? ""
-                    completion("Execution of AppleScript successful!", scriptResult)
+                    completion(.success(scriptResult))
                 }
             }
         } catch {
             self.status = error.localizedDescription
-            completion("Error: \(error.localizedDescription)", "")
+            completion(.failure(error))
         }
     }
 }
