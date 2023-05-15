@@ -1,101 +1,128 @@
 import SwiftUI
 import Foundation
 
+/// A manager class for handling areas and to-dos in the app.
 class ThingsManager: ObservableObject {
     static let shared = ThingsManager()
     @Published var areas: Set<Area> = []
     @Published var activeArea: Area?
     @Published var selectedAreas: Set<Area> = []
 
-    
     @Published var firstToDo: (name: String, id: String) = ("", "")
+    
+    private struct UserDefaultsKeys {
+        static let selectedAreas = "selectedAreas"
+        static let activeAreaID = "activeAreaID"
+    }
 
     public init() {
         startFetchingToDos()
     }
     
+    /// Starts fetching to-dos periodically.
     private func startFetchingToDos() {
         fetchToDos { [weak self] result in
-            self?.firstToDo = result
+            switch result {
+            case .success(let todo):
+                self?.firstToDo = todo
+            case .failure(let error):
+                self?.firstToDo = ("Error catching todo: \(error)", "")
+            }
         }
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            self?.fetchToDos { result in
-                self?.firstToDo = result
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.startFetchingToDos()
+        }
+    }
+    
+    /// Loads areas data.
+    func loadData() {
+        fetchAreas { result in
+            switch result {
+            case .success(let fetchedAreas):
+                self.areas = fetchedAreas
+                self.loadSelectedAreas()
+            case .failure(let error):
+                print("Error fetching areas: \(error)")
             }
         }
     }
     
-    func loadData() {
-        fetchAreas { fetchedAreas in
-            self.areas = fetchedAreas
-            self.loadSelectedAreas()
+    func isAreaSelected(_ area: Area) -> Bool {
+        selectedAreas.contains(area)
+    }
+    
+    func toggleAreaSelection(for area: Area) {
+        if selectedAreas.contains(area) {
+            selectedAreas.remove(area)
+        } else {
+            selectedAreas.insert(area)
         }
+        saveSelectedAreas()
     }
 
     func saveSelectedAreas() {
         let selectedAreaIDsArray = self.selectedAreas.map { $0.id }
-        UserDefaults.standard.set(selectedAreaIDsArray, forKey: "selectedAreas")
+        UserDefaults.standard.set(selectedAreaIDsArray, forKey: UserDefaultsKeys.selectedAreas)
     }
 
     func loadSelectedAreas() {
-        if let selectedAreaIDsArray = UserDefaults.standard.array(forKey: "selectedAreas") as? [String] {
+        if let selectedAreaIDsArray = UserDefaults.standard.array(forKey: UserDefaultsKeys.selectedAreas) as? [String] {
             let selectedAreas = self.areas.filter { selectedAreaIDsArray.contains($0.id) }
             self.selectedAreas = Set(selectedAreas)
         }
     }
-    
+
     func saveActiveArea() {
         if let activeArea = self.activeArea {
-            UserDefaults.standard.set(activeArea.id, forKey: "activeAreaID")
+            UserDefaults.standard.set(activeArea.id, forKey: UserDefaultsKeys.activeAreaID)
         } else {
-            UserDefaults.standard.removeObject(forKey: "activeAreaID")
+            UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.activeAreaID)
         }
     }
 
     func loadActiveArea() {
-        if let activeAreaID = UserDefaults.standard.string(forKey: "activeAreaID") {
+        if let activeAreaID = UserDefaults.standard.string(forKey: UserDefaultsKeys.activeAreaID) {
             self.activeArea = self.areas.first(where: { $0.id == activeAreaID })
         } else {
             self.activeArea = nil
         }
     }
     
-    func fetchAreas(completion: @escaping (Set<Area>) -> Void) {
+    private let specialArea = Area(id: "1", areaName: "No Areas")
+    
+    /// Fetches areas data.
+    func fetchAreas(completion: @escaping (Result<Set<Area>, Error>) -> Void) {
         DispatchQueue.global().async {
             let executeAppleScript = ExecuteAppleScript(scriptName: "fetchAreas.scpt")
-            print("starting getting areas")
             executeAppleScript.execute { (status, result) in
-                print("Result: \(result)")
                 DispatchQueue.main.async {
                     if status == "Execution of AppleScript successful!" {
 
                         if let jsonData = result.data(using: .utf8) {
-                            print("JSON Data: \(String(data: jsonData, encoding: .utf8) ?? "")")
                             let decoder = JSONDecoder()
                             do {
                                 var areas = try decoder.decode([Area].self, from: jsonData)
                                 
                                 // Add the special area as the first element
-                                let specialArea = Area(id: "1", areaName: "No Areas")
-                                areas.append(specialArea)
+                                areas.append(self.specialArea)
                                 
-                                completion(Set(areas))
+                                completion(.success(Set(areas)))
                             } catch {
-                                print("Error: \(error.localizedDescription)") // Print the error details
-                                completion(Set())
+                                completion(.failure(error))
                             }
                         } else {
-                            completion(Set())
+                            completion(.failure(NSError(domain: "ConversionError", code: -1, userInfo: nil)))
                         }
                     } else {
-                        completion(Set())
+                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: nil)))
                     }
                 }
             }
         }
     }
     
-    func fetchToDos(completion: @escaping ((String, String)) -> Void) {
+    /// Fetches to-dos data.
+    func fetchToDos(completion: @escaping (Result<(String, String), Error>) -> Void) {
         loadData()
         loadActiveArea()
         DispatchQueue.global().async {
@@ -103,38 +130,44 @@ class ThingsManager: ObservableObject {
             executeAppleScript.execute { (status, result) in
                 DispatchQueue.main.async {
                     if status == "Execution of AppleScript successful!" {
-                        print("Result is: \(result)")
                         if let jsonData = result.data(using: .utf8) {
-                            let decoder = JSONDecoder()
-                            do {
-                                let todos = try decoder.decode([ToDo].self, from: jsonData)
-                                // Get the active area name
-                                let activeAreaName = ThingsManager.shared.activeArea?.areaName
-                                // Filter the todos based on the active area
-                                let filteredTodos = todos.filter { $0.area == activeAreaName }
-                                // Check if there are any filtered todos and select the first one
-                                if let firstTodo = filteredTodos.first {
-                                    // Pass both name and ID to the completion handler
-                                    completion((firstTodo.recordName, firstTodo.recordID))
-                                } else {
-                                    print("No todos in the active area")
-                                    completion(("No todos in the active area", ""))
-                                }
-                            } catch {
-                                print("Error: \(error.localizedDescription)") // Print the error details
-                                completion(("Error: Unable to decode JSON", ""))
+                            let result = decodeAndFilterToDos(jsonData: jsonData)
+                            switch result {
+                            case .success(let todo):
+                                completion(.success(todo))
+                            case .failure(let error):
+                                completion(.failure(error))
                             }
                         } else {
-                            completion((result, ""))
+                            completion(.failure(NSError(domain: "ConversionError", code: -1, userInfo: nil)))
                         }
                     } else {
-                        completion(("Error: \(status)", ""))
+                        completion(.failure(NSError(domain: "AppleScriptError", code: -1, userInfo: nil)))
                     }
                 }
             }
         }
     }
 
+}
 
-
+/// Decodes and filters to-dos based on the active area.
+private func decodeAndFilterToDos(jsonData: Data) -> Result<(String, String), Error> {
+    let decoder = JSONDecoder()
+    do {
+        let todos = try decoder.decode([ToDo].self, from: jsonData)
+        // Get the active area name
+        let activeAreaName = ThingsManager.shared.activeArea?.areaName
+        // Filter the todos based on the active area
+        let filteredTodos = todos.filter { $0.area == activeAreaName }
+        // Check if there are any filtered todos and select the first one
+        if let firstTodo = filteredTodos.first {
+            // Pass both name and ID to the completion handler
+            return .success((firstTodo.recordName, firstTodo.recordID))
+        } else {
+            return .failure(NSError(domain: "NoFilteredTodos", code: -1, userInfo: nil))
+        }
+    } catch {
+        return .failure(error)
+    }
 }

@@ -3,33 +3,24 @@ import SwiftUI
 struct AreaSelectorView: View {
     @EnvironmentObject var thingsManager: ThingsManager
 
+    private var sortedAreas: [Area] {
+        thingsManager.areas.sorted(by: { $0.areaName > $1.areaName })
+    }
+
     var body: some View {
         VStack {
             Text("Select Areas")
                 .font(.headline)
             
-            List(thingsManager.areas.sorted(by: {$0.areaName > $1.areaName})) { area in
-                AreaSelectionRow(area: area, isSelected: isAreaSelected(area)) {
-                    self.toggleAreaSelection(for: area)
+            List {
+                ForEach(sortedAreas) { area in
+                    AreaSelectionRow(area: area, isSelected: thingsManager.isAreaSelected(area)) {
+                        thingsManager.toggleAreaSelection(for: area)
+                    }
                 }
             }
         }
     }
-    
-    private func isAreaSelected(_ area: Area) -> Bool {
-        thingsManager.selectedAreas.contains(area)
-    }
-    
-    private func toggleAreaSelection(for area: Area) {
-        if thingsManager.selectedAreas.contains(area) {
-            thingsManager.selectedAreas.remove(area)
-        } else {
-            thingsManager.selectedAreas.insert(area)
-        }
-        thingsManager.saveSelectedAreas()
-    }
-    
-
 }
 
 struct AreaSelectionRow: View {

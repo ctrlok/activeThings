@@ -23,19 +23,21 @@ struct ContentView: View {
             thingsManager.loadData()
         }
     }
-
+    
+    private var activeAreaGradient: LinearGradient {
+        LinearGradient(gradient: Gradient(colors: [Color(red: 0.92, green: 0.92, blue: 0.92).opacity(0.8)]), startPoint: .leading, endPoint: .trailing)
+    }
+    
     
     @ViewBuilder
     private func createActiveAreaText() -> some View {
-        let gradient = LinearGradient(gradient: Gradient(colors: [Color(red: 0.92, green: 0.92, blue: 0.92).opacity(0.8)]), startPoint: .leading, endPoint: .trailing)
-
         if let activeArea = thingsManager.activeArea {
-            GradientText(text: activeArea.areaName, gradient: gradient)
+            GradientText(text: activeArea.areaName, gradient: activeAreaGradient)
                 .font(.system(size: 12, weight: .regular))
                 .foregroundColor(.gray)
 
         } else {
-            GradientText(text: "No active area selected", gradient: gradient)
+            GradientText(text: "No active area selected", gradient: activeAreaGradient)
         }
     }
     
