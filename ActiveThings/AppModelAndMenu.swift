@@ -1,9 +1,11 @@
+// AppModelAndMenu.swift
+
 import SwiftUI
 import AppKit
 
-class MainMenu: NSMenu {
-    override init(title: String) {
-        super.init(title: title)
+final class MainMenu: NSMenu {
+    init() {
+        super.init(title: "")
         setupMenuItems()
     }
     
@@ -12,12 +14,16 @@ class MainMenu: NSMenu {
     }
     
     private func setupMenuItems() {
-        items.removeAll() // Remove all existing menu items
-
-        // Add your custom menu items here, for example:
-        let helpMenuItem = NSMenuItem(title: "Help", action: #selector(helpAction), keyEquivalent: "")
-        helpMenuItem.target = self
+        items.removeAll()
+        
+        let helpMenuItem = createMenuItem(title: "Help", action: #selector(helpAction))
         addItem(helpMenuItem)
+    }
+
+    private func createMenuItem(title: String, action: Selector) -> NSMenuItem {
+        let menuItem = NSMenuItem(title: title, action: action, keyEquivalent: "")
+        menuItem.target = self
+        return menuItem
     }
 
     @objc private func helpAction() {
@@ -25,7 +31,7 @@ class MainMenu: NSMenu {
     }
 }
 
-class AppModel: ObservableObject {
+final class AppModel: ObservableObject {
     @Published var activeView: ActiveView = .main
     @Published var highlightThingsToken: Bool = false
 
@@ -34,6 +40,3 @@ class AppModel: ObservableObject {
         case preferences
     }
 }
-
-
-

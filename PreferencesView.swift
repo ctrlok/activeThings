@@ -1,15 +1,22 @@
 import SwiftUI
+import KeyboardShortcuts
 
 struct PreferencesView: View {
-    @ObservedObject var thingsManager: ThingsManager
+    @EnvironmentObject var thingsManager: ThingsManager
+
 
     @State private var thingsToken: String = UserDefaults.standard.string(forKey: "thingsToken") ?? ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             // Add the ProjectSelectorView here
-            ProjectSelectorView(thingsManager: thingsManager)
+            AreaSelectorView()
                 .padding()
+            
+            HStack {
+                Text("Select Active Area:")
+                KeyboardShortcuts.Recorder(for: .selectActiveArea)
+            }
             
             Spacer()
             

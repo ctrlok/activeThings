@@ -1,6 +1,11 @@
 import SwiftUI
 import Foundation
 import AppKit
+import KeyboardShortcuts
+
+extension KeyboardShortcuts.Name {
+    static let selectActiveArea = Self("selectActiveArea")
+}
 
 
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -8,7 +13,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView(thingsManager: ThingsManager.shared)
+        let contentView = ContentView().environmentObject(ThingsManager.shared)
+
         
         for screen in NSScreen.screens {
             // Create the window and set the content view.
@@ -32,8 +38,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.makeKeyAndOrderFront(nil)
             windows.append(window)
         }
+        KeyboardShortcuts.onKeyUp(for: .selectActiveArea) {
+            // Cycle through selected areas
+            let selectedAreas = ThingsManager.shared.selectedAreas
+            if let currentActiveArea = ThingsManager.shared.activeArea {
+                let currentIndex = selectedAreas.firstIndex(of: currentActiveArea) ?? selectedAreas.endIndex
+                let nextIndex = selectedAreas.index(after: currentIndex) == selectedAreas.endIndex ? selectedAreas.startIndex : selectedAreas.index(after: currentIndex)
+                ThingsManager.shared.activeArea = selectedAreas[nextIndex]
+            } else if let firstSelectedArea = selectedAreas.first {
+                ThingsManager.shared.activeArea = firstSelectedArea
+            }
+            ThingsManager.shared.saveActiveArea()
+        }
     }
 }
+
 
 @main
 struct MyApp: App {
@@ -42,7 +61,8 @@ struct MyApp: App {
     
     var body: some Scene {
         Settings {
-            PreferencesView(thingsManager: thingsManager)
+            PreferencesView()
+                .environmentObject(thingsManager)
 
         }
         .handlesExternalEvents(matching: Set(arrayLiteral: "*"))

@@ -1,49 +1,57 @@
 import SwiftUI
 
-struct ProjectSelectorView: View {
-    @ObservedObject var thingsManager: ThingsManager
-    @State private var areas: [Areas] = []
-    @State private var selectedAreas: Set<String> = Set<String>()
-    
+struct AreaSelectorView: View {
+    @EnvironmentObject var thingsManager: ThingsManager
+
     var body: some View {
         VStack {
             Text("Select Areas")
                 .font(.headline)
             
-            List(areas) { area in
-                HStack {
-                    Text(area.AreaName)
-                    Spacer()
-                    Toggle("", isOn: Binding(
-                        get: { selectedAreas.contains(area.id) },
-                        set: { isSelected in
-                            if isSelected {
-                                selectedAreas.insert(area.id)
-                            } else {
-                                selectedAreas.remove(area.id)
-                            }
-                            saveSelectedAreas()
-                        }
-                    )).toggleStyle(CheckboxToggleStyle())
+            List(thingsManager.areas.sorted(by: {$0.areaName > $1.areaName})) { area in
+                AreaSelectionRow(area: area, isSelected: isAreaSelected(area)) {
+                    self.toggleAreaSelection(for: area)
                 }
             }
         }
-        .onAppear {
-            ThingsManager().fetchAreas { fetchedAreas in
-                areas = fetchedAreas
-            }
-            loadSelectedAreas()
+    }
+    
+    private func isAreaSelected(_ area: Area) -> Bool {
+        thingsManager.selectedAreas.contains(area)
+    }
+    
+    private func toggleAreaSelection(for area: Area) {
+        if thingsManager.selectedAreas.contains(area) {
+            thingsManager.selectedAreas.remove(area)
+        } else {
+            thingsManager.selectedAreas.insert(area)
         }
+        thingsManager.saveSelectedAreas()
     }
     
-    func saveSelectedAreas() {
-        let selectedAreasArray = Array(selectedAreas)
-        UserDefaults.standard.set(selectedAreasArray, forKey: "selectedAreas")
-    }
-    
-    func loadSelectedAreas() {
-        if let selectedAreasArray = UserDefaults.standard.array(forKey: "selectedAreas") as? [String] {
-            selectedAreas = Set(selectedAreasArray)
+
+}
+
+struct AreaSelectionRow: View {
+    let area: Area
+    let isSelected: Bool
+    let toggleSelection: () -> Void
+
+    var body: some View {
+        HStack {
+            Text(area.areaName)
+                .font(.body)
+
+            Spacer()
+
+            if isSelected {
+                Image(systemName: "checkmark")
+                    .foregroundColor(.blue)
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            toggleSelection()
         }
     }
 }
