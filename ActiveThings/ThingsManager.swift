@@ -9,6 +9,8 @@ class ThingsManager: ObservableObject {
     @Published var selectedAreas: Set<Area> = []
 
     @Published var firstToDo: (name: String, id: String) = ("", "")
+    @Published var completedToday: Int = 0
+    @Published var totalToday: Int = 0
     
     private struct UserDefaultsKeys {
         static let selectedAreas = "selectedAreas"
@@ -161,8 +163,18 @@ private func decodeAndFilterToDos(jsonData: Data) -> Result<(String, String), Er
         let activeAreaName = ThingsManager.shared.activeArea?.areaName
         // Filter the todos based on the active area
         let filteredTodos = todos.filter { $0.area == activeAreaName }
-        // Check if there are any filtered todos and select the first one
-        if let firstTodo = filteredTodos.first {
+        // Count the completed tasks
+        let completedTasks = todos.filter { $0.status == "completed" }.count
+        let totalTasks = todos.count
+        // Update the completedToday property on the main thread
+        DispatchQueue.main.async {
+            ThingsManager.shared.completedToday = completedTasks
+            ThingsManager.shared.totalToday = totalTasks
+        }
+        // Filter out the completed tasks
+        let nonCompletedTodos = filteredTodos.filter { $0.status != "completed" }
+        // Check if there are any non-completed todos and select the first one
+        if let firstTodo = nonCompletedTodos.first {
             // Pass both name and ID to the completion handler
             return .success((firstTodo.recordName, firstTodo.recordID))
         } else {
@@ -172,3 +184,4 @@ private func decodeAndFilterToDos(jsonData: Data) -> Result<(String, String), Er
         return .failure(error)
     }
 }
+

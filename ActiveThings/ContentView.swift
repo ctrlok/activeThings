@@ -9,8 +9,9 @@ struct ContentView: View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
                 VStack(alignment: .leading) {
-                    createTaskText()
+                    createTaskText().padding(.bottom, 5)
                     createActiveAreaText()
+                    createCompleted()
                 }
                 .padding(.top, 15)
                 .padding(.leading, 20)
@@ -40,6 +41,14 @@ struct ContentView: View {
             GradientText(text: "No active area selected", gradient: activeAreaGradient)
         }
     }
+    
+    @ViewBuilder
+    private func createCompleted() -> some View {
+            GradientText(text: "\(ThingsManager.shared.completedToday) of \(ThingsManager.shared.totalToday) is done!", gradient: activeAreaGradient)
+                .font(.system(size: 12, weight: .regular))
+                .foregroundColor(.gray)
+    }
+    
     
     @ViewBuilder
     private func createBackgroundGradient(using geometry: GeometryProxy) -> some View {

@@ -3,14 +3,16 @@ use framework "Foundation"
 tell application "Things3"
     set todoList to {}
     repeat with inboxToDo in to dos of list "Today"
-        if status of inboxToDo is not completed then
-            set areaName to "No Areas"
-            if area of inboxToDo exists then
-                set areaName to name of area of inboxToDo
-            end if
-            set todoRecord to {recordID:id of inboxToDo, RecordName:name of inboxToDo, areaName:areaName}
-            copy todoRecord to the end of todoList
+        set areaName to "No Areas"
+        set statusName to "open"
+        if area of inboxToDo exists then
+            set areaName to name of area of inboxToDo
         end if
+        if status of inboxToDo is completed then
+            set statusName to "completed"
+        end if
+        set todoRecord to {recordID:id of inboxToDo, RecordName:name of inboxToDo, areaName:areaName, statusName:statusName}
+        copy todoRecord to the end of todoList
     end repeat
     set myObject to todoList
     

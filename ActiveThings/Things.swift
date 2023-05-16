@@ -8,6 +8,7 @@ struct ToDo: Codable {
     let recordID: String
     let recordName: String
     let area: String
+    let status: String
 }
 
 extension ToDo {
@@ -15,6 +16,7 @@ extension ToDo {
         case recordID
         case recordName = "RecordName"
         case area = "areaName"
+        case status = "statusName"
     }
 }
 

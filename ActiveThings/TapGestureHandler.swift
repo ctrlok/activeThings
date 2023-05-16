@@ -38,7 +38,7 @@ struct OptionClickableText: View {
                       Gradient.Stop(color: Color(red: 0.92, green: 0.92, blue: 0.92).opacity(1), location: 1)
                   ]), startPoint: .leading, endPoint: .trailing)
               )
-                  .font(.system(size: 15, weight: .regular))
+              .font(.custom("Helvetica", size: 15))
           }
           .buttonStyle(TransparentButtonStyle())
     }
