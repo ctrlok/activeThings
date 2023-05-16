@@ -19,6 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         setupWindows(for: NSScreen.screens, contentView: contentView)
         setupKeyboardShortcut()
+        setupMenuBar()
         NotificationCenter.default.addObserver(self, selector: #selector(handleDisplayUpdate), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         
     }
@@ -85,6 +86,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             ThingsManager.shared.saveActiveArea()
         }
     }
+    
 
 }
 

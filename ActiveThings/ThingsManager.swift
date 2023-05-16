@@ -33,7 +33,7 @@ class ThingsManager: ObservableObject {
     /// Starts fetching to-dos periodically.
     private func startFetchingToDos() {
         fetchToDosOneTime()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
             self?.startFetchingToDos()
         }
     }

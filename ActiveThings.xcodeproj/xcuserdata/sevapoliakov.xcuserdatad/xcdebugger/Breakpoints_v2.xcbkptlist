@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "EC71982F-4A7B-40EB-B999-215B12C43564"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.AddressBreakpoint">
+         <BreakpointContent
+            uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            symbolName = "*0x10064b910">
+            <Locations>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 82faee41a2d913d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActiveThings.AppleScriptExecutor.__deallocating_deinit"
+                  moduleName = "ActiveThings"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sevapoliakov/my/ActiveThings/ActiveThings/ActiveThings/AppleScriptExecutor.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "3"
+                  endingLineNumber = "3"
+                  offsetFromSymbolStart = "8">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 942e059c8b35b81"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "objc_visitor::Category::getInstanceMethods(objc_visitor::Visitor const&amp;) const"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "88">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 285e48e2c0de38ca"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "dyld4::JustInTimeLoader::dependent(dyld4::RuntimeState const&amp;, unsigned int, dyld4::Loader::DependentKind*) const"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "56">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

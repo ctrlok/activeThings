@@ -45,10 +45,8 @@ struct OptionClickableText: View {
 
     private func handleClick() {
         let optionKeyPressed = NSApp.currentEvent?.modifierFlags.contains(.option) ?? false
-        print("Handling click. Option key pressed: \(optionKeyPressed)")
 
         guard let thingsToken = UserDefaults.standard.string(forKey: "thingsToken") else {
-            print("No token found")
             return
         }
 
@@ -57,10 +55,8 @@ struct OptionClickableText: View {
             urlString = "things:///update?id=\(taskID)&completed=true&auth-token=\(thingsToken)"
         }
 
-        print("URL string: \(urlString)")
 
         if let url = URL(string: urlString) {
-            print("Opening URL: \(url)")
             NSWorkspace.shared.open(url)
         } else {
             print("Failed to create URL from string: \(urlString)")
