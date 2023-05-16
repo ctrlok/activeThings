@@ -19,8 +19,7 @@ class ThingsManager: ObservableObject {
         startFetchingToDos()
     }
     
-    /// Starts fetching to-dos periodically.
-    private func startFetchingToDos() {
+    private func fetchToDosOneTime() {
         fetchToDos { [weak self] result in
             switch result {
             case .success(let todo):
@@ -29,7 +28,12 @@ class ThingsManager: ObservableObject {
                 self?.firstToDo = ("Error catching todo: \(error)", "")
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+    }
+    
+    /// Starts fetching to-dos periodically.
+    private func startFetchingToDos() {
+        fetchToDosOneTime()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
             self?.startFetchingToDos()
         }
     }
@@ -78,6 +82,7 @@ class ThingsManager: ObservableObject {
         } else {
             UserDefaults.standard.removeObject(forKey: UserDefaultsKeys.activeAreaID)
         }
+        fetchToDosOneTime()
     }
 
     func loadActiveArea() {
