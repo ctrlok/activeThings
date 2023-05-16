@@ -13,13 +13,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let windowSize = NSSize(width: 500, height: 500) // Adjust this to your liking
 
     var thingsManager = ThingsManager.shared
+    var statusBarMenu: NSMenu?
+    var statusBar: NSStatusItem?
+    weak var preferencesWindowController: NSWindowController?
+
+
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let contentView = ContentView().environmentObject(thingsManager)
 
         setupWindows(for: NSScreen.screens, contentView: contentView)
         setupKeyboardShortcut()
-        setupMenuBar()
+        setupStatusBarMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(handleDisplayUpdate), name: NSApplication.didChangeScreenParametersNotification, object: nil)
         
     }
@@ -87,6 +92,44 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    private func setupStatusBarMenu() {
+        statusBarMenu = NSMenu()
+        statusBarMenu?.addItem(NSMenuItem(title: "Preferences...", action: #selector(showPreferences), keyEquivalent: ","))
+        statusBarMenu?.addItem(NSMenuItem.separator())
+        statusBarMenu?.addItem(NSMenuItem(title: "Quit MyApp", action: #selector(quitApp), keyEquivalent: "q"))
+
+        statusBar = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+        statusBar?.button?.image = NSImage(named: NSImage.Name("menubar2")) // Replace with your own image
+        statusBar?.menu = statusBarMenu
+    }
+
+    @objc func showPreferences() {
+        // Check if preferences window is already open
+        if let windowController = self.preferencesWindowController {
+            windowController.window?.makeKeyAndOrderFront(nil)
+            return
+        }
+
+        let contentView = PreferencesView().environmentObject(self.thingsManager)
+
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 300),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
+            backing: .buffered, defer: false)
+        window.center()
+        window.setFrameAutosaveName("Preferences Window")
+        window.contentView = NSHostingView(rootView: contentView)
+
+        let windowController = NSWindowController(window: window)
+        self.preferencesWindowController = windowController
+
+        windowController.showWindow(nil)
+        windowController.window?.makeKeyAndOrderFront(nil)
+    }
+
+    @objc func quitApp() {
+        NSApp.terminate(nil)
+    }
 
 }
 

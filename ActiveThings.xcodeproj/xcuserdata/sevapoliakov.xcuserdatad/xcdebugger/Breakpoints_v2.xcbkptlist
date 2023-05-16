@@ -48,6 +48,25 @@
                   usesParentBreakpointCondition = "Yes"
                   offsetFromSymbolStart = "56">
                </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - e1751bdd6a740749"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "invocation function for block in dyld3::MachOAnalyzer::forEachBind_Relocations(Diagnostics&amp;, dyld3::MachOLoaded::LinkEditInfo const&amp;, dyld3::MachOFile::SegmentInfo const*, bool, void (char const*, dyld3::MachOLoaded::LinkEditInfo const&amp;, dyld3::MachOFile::SegmentInfo const*, bool, bool, unsigned int, int, unsigned int, unsigned char, unsigned long long, unsigned char, char const*, bool, bool, unsigned long long, bool, bool&amp;) block_pointer) const"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "140">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 7d1b956c1"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
