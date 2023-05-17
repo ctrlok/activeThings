@@ -8,9 +8,9 @@ extension KeyboardShortcuts.Name {
 }
 
 
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var windows: [NSWindowController] = []
-    private let windowSize = NSSize(width: 500, height: 500) // Adjust this to your liking
+    private let windowSize = NSSize(width: 350, height: 200) // Adjust this to your liking
 
     var thingsManager = ThingsManager.shared
     var statusBarMenu: NSMenu?
@@ -59,10 +59,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         window.isOpaque = false
         window.backgroundColor = NSColor.clear
 
+        // Calculate the desired position of the window
+        let appPosition: AppPosition = AppPosition(rawValue: UserDefaults.standard.string(forKey: "appPosition") ?? "") ?? .topLeft
         let screenSize = screen.visibleFrame.size
-        let desiredWindowSize = NSSize(width: windowSize.width, height: windowSize.height) // Rename the constant to avoid conflict
-        let windowOrigin = NSPoint(x: screen.visibleFrame.origin.x, y: screenSize.height + screen.visibleFrame.origin.y - desiredWindowSize.height + 2)
-        window.setFrame(NSRect(origin: windowOrigin, size: desiredWindowSize), display: true)
+        let screenOrigin = screen.visibleFrame.origin
+        var windowOrigin: NSPoint
+
+        switch appPosition {
+        case .topLeft:
+            windowOrigin = NSPoint(x: screenOrigin.x, y: screenOrigin.y + screenSize.height - windowSize.height)
+        case .topRight:
+            windowOrigin = NSPoint(x: screenOrigin.x + screenSize.width - windowSize.width, y: screenOrigin.y + screenSize.height - windowSize.height)
+        case .bottomLeft:
+            windowOrigin = NSPoint(x: screenOrigin.x, y: screenOrigin.y)
+        case .bottomRight:
+            windowOrigin = NSPoint(x: screenOrigin.x + screenSize.width - windowSize.width, y: screenOrigin.y)
+        }
+
+        window.setFrame(NSRect(origin: windowOrigin, size: windowSize), display: true)
 
         let windowController = NSWindowController(window: window)
         return windowController

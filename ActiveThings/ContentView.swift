@@ -1,5 +1,3 @@
-// ContentView.swift
-
 import SwiftUI
 
 struct ContentView: View {
@@ -8,16 +6,26 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack(alignment: .topLeading) {
+                ZStack {
+                    VisualEffectView()
+                    
+                    LinearGradient(gradient: Gradient(colors: [.black.opacity(0.5), .black.opacity(0.2)]),
+                                   startPoint: .top, endPoint: .bottom)
+                        .opacity(0.5)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 9))
+                .shadow(radius: 5)
                 VStack(alignment: .leading) {
                     createTaskText().padding(.bottom, 5)
                     createActiveAreaText()
                     createCompleted()
                 }
                 .padding(.top, 15)
-                .padding(.leading, 20)
-                createBackgroundGradient(using: geometry)
+                .padding(.leading, 10)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.top, 10)
+            .padding(.leading, 10)
+            .frame(maxWidth: 300, maxHeight: 100)
         }
         .onAppear {
             thingsManager.loadActiveArea()
@@ -49,33 +57,31 @@ struct ContentView: View {
                 .foregroundColor(.gray)
     }
     
-    
-    @ViewBuilder
-    private func createBackgroundGradient(using geometry: GeometryProxy) -> some View {
-        let gradientCenter = UnitPoint(
-            x: (geometry.frame(in: .local).midX - 320) / geometry.size.width,
-            y: (geometry.frame(in: .local).midY - 320) / geometry.size.height
-        )
-        
-        let gradientColors = Gradient(colors: [Color.black.opacity(0.8), Color.black.opacity(0.0)])
-        
-        let radialGradient = RadialGradient(
-            gradient: gradientColors,
-            center: gradientCenter,
-            startRadius: 0,
-            endRadius: 550
-        )
-        
-        Rectangle()
-            .fill(radialGradient)
-            .scaleEffect(x: 1, y: 0.2, anchor: .topLeading)
-            .edgesIgnoringSafeArea(.all)
-            .zIndex(-1)
-    }
-    
     @ViewBuilder
     private func createTaskText() -> some View {
         OptionClickableText(taskID: thingsManager.firstToDo.id, taskName: thingsManager.firstToDo.name)
-
     }
 }
+
+struct VisualEffectView: NSViewRepresentable {
+    var material: NSVisualEffectView.Material = .fullScreenUI
+    var blendingMode: NSVisualEffectView.BlendingMode = .withinWindow
+    var isEmphasized: Bool = true
+
+    func makeNSView(context: NSViewRepresentableContext<Self>) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = material
+        view.blendingMode = blendingMode
+        view.isEmphasized = isEmphasized
+        view.state = .active
+        return view
+    }
+
+    func updateNSView(_ nsView: NSVisualEffectView, context: NSViewRepresentableContext<Self>) {
+        nsView.material = material
+        nsView.blendingMode = blendingMode
+        nsView.isEmphasized = isEmphasized
+        nsView.state = .active
+    }
+}
+
