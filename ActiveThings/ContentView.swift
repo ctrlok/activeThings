@@ -9,9 +9,8 @@ struct ContentView: View {
                 ZStack {
                     VisualEffectView()
                     
-                    LinearGradient(gradient: Gradient(colors: [.black.opacity(0.5), .black.opacity(0.2)]),
+                    LinearGradient(gradient: Gradient(colors: [.black.opacity(0.4), .black.opacity(0.2)]),
                                    startPoint: .top, endPoint: .bottom)
-                        .opacity(0.5)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 9))
                 .shadow(radius: 5)
@@ -21,10 +20,9 @@ struct ContentView: View {
                     createCompleted()
                 }
                 .padding(.top, 15)
-                .padding(.leading, 10)
+                .padding(.leading, 15)
             }
-            .padding(.top, 10)
-            .padding(.leading, 10)
+            .padding(10)
             .frame(maxWidth: 300, maxHeight: 100)
         }
         .onAppear {

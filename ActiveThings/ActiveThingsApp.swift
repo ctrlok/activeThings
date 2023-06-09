@@ -7,16 +7,24 @@ extension KeyboardShortcuts.Name {
     static let selectActiveArea = Self("selectActiveArea")
 }
 
+extension UserDefaults {
+    @objc dynamic var appPosition: String {
+        get { string(forKey: "appPosition") ?? "" }
+        set { set(newValue, forKey: "appPosition") }
+    }
+}
 
 class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     var windows: [NSWindowController] = []
-    private let windowSize = NSSize(width: 350, height: 200) // Adjust this to your liking
+    private let windowSize = NSSize(width: 300, height: 100) // Adjust this to your liking
 
     var thingsManager = ThingsManager.shared
     var statusBarMenu: NSMenu?
     var statusBar: NSStatusItem?
     weak var preferencesWindowController: NSWindowController?
+    var appPositionObservation: NSKeyValueObservation?
 
+    
 
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -26,7 +34,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         setupKeyboardShortcut()
         setupStatusBarMenu()
         NotificationCenter.default.addObserver(self, selector: #selector(handleDisplayUpdate), name: NSApplication.didChangeScreenParametersNotification, object: nil)
-        
+        setupUserDefaultsObservation()
+    }
+    
+    private func setupUserDefaultsObservation() {
+        appPositionObservation = UserDefaults.standard.observe(\.appPosition, options: .new) { (_, _) in
+            self.handleDisplayUpdate()
+        }
+    }
+
+    deinit {
+        appPositionObservation?.invalidate()
     }
 
     private func setupWindows<V: View>(for screens: [NSScreen], contentView: V) {
@@ -79,6 +97,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         window.setFrame(NSRect(origin: windowOrigin, size: windowSize), display: true)
 
         let windowController = NSWindowController(window: window)
+        print("Screen visible frame: \(screen.visibleFrame)")
+        print("Window frame: \(window.frame)")
         return windowController
         
     }

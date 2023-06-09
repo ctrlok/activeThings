@@ -22,7 +22,7 @@ class CustomWindow: NSWindow {
         
         let windowWidth: CGFloat = 350
         let windowHeight: CGFloat = 200
-        let padding: CGFloat = 15
+        let padding: CGFloat = 0
         
         let x: CGFloat
         let y: CGFloat

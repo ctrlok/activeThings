@@ -85,6 +85,59 @@
                   usesParentBreakpointCondition = "Yes"
                   offsetFromSymbolStart = "0">
                </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - bc91cecc4f25e437"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ActiveThings.ToDo.encode(to: Swift.Encoder) throws -&gt; ()"
+                  moduleName = "ActiveThings"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sevapoliakov/my/ActiveThings/ActiveThings/%3Ccompiler-generated%3E"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "480">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 4faf8b30b09343d5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  moduleName = "ActiveThings"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 4faf8b30b09343d5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  moduleName = "ActiveThings"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - 31c32bae5c33da6d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "invocation function for block in dyld4::RuntimeState::appendInterposingTuples(dyld4::Loader const*, unsigned char const*, unsigned int)"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "560">
+               </Location>
+               <Location
+                  uuid = "FDFC3F56-459E-48C5-83DA-BA68B1F1E481 - ea136d600569f71c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "dyld3::sVersionMap"
+                  moduleName = "dyld"
+                  usesParentBreakpointCondition = "Yes"
+                  offsetFromSymbolStart = "632">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
